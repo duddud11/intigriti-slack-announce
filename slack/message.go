@@ -20,10 +20,10 @@ func buildMessage(f intigriti.Submission) slack.Payload {
 	attach := slack.Attachment{}
 
 	/*
-	attach.AddField(slack.Field{
-		Title: "Created",
-		Value: f.Timestamp.Format("2006-01-02 15:04:05"),
-	})
+		attach.AddField(slack.Field{
+			Title: "Created",
+			Value: f.Timestamp.Format("2006-01-02 15:04:05"),
+		})
 	*/
 
 	attach.AddField(slack.Field{
@@ -43,9 +43,9 @@ func buildMessage(f intigriti.Submission) slack.Payload {
 	}
 
 	return slack.Payload{
-		Username:    "intigriti",
-		Text:        fmt.Sprintf("A new finding was published by *%s* for *%s*: <%s|%s>",
-			cleanStr(f.Researcher.Username), cleanStr(f.Program.Name), f.URL, cleanStr(f.Title)),
+		Username: "intigriti",
+		Text: fmt.Sprintf("A new *%s* finding by *%s* for *%s*: <%s|%s>",
+			cleanStr(f.Severity), cleanStr(f.Researcher.Username), cleanStr(f.Program.Name), f.URL, cleanStr(f.Title)),
 		Attachments: []slack.Attachment{attach},
 	}
 }

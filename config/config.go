@@ -7,14 +7,14 @@ import (
 )
 
 type Config struct {
-	ConfigPath				string		`yaml:"-"`
-	FindingIDs				[]string	`yaml:"findings"`
-
-	IncludeNonReady			bool 		`yaml:"include_non_ready"`
-	CheckInterval			uint		`yaml:"check_interval_minutes"`
-	SlackWebhookURL			string		`yaml:"slack_url"`
-	IntigritiClientID		string		`yaml:"intigriti_client_id"`
-	IntigritiClientSecret	string		`yaml:"intigriti_client_secret"`
+	ConfigPath            string            `yaml:"-"`
+	FindingIDs            map[string]string `yaml:"findings_festival"`
+	IncludeNonReady       bool              `yaml:"include_non_ready"`
+	CheckInterval         uint              `yaml:"check_interval_minutes"`
+	SlackWebhookURL       string            `yaml:"slack_url"`
+	IntigritiClientID     string            `yaml:"intigriti_client_id"`
+	IntigritiClientSecret string            `yaml:"intigriti_client_secret"`
+	AppStartTime          int64
 }
 
 func ParseConfig(configPath string) (Config, error) {

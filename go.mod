@@ -2,6 +2,8 @@ module github.com/hazcod/intigriti-slack-announce
 
 go 1.14
 
+//replace github.com/hazcod/go-intigriti => ../go-intigriti
+
 require (
 	github.com/ashwanthkumar/slack-go-webhook v0.0.0-20200209025033-430dd4e66960
 	github.com/elazarl/goproxy v0.0.0-20200809112317-0581fc3aee2d // indirect
@@ -14,7 +16,7 @@ require (
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
-	golang.org/x/sys v0.0.0-20201014080544-cc95f250f6bc // indirect
+	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 	moul.io/http2curl v1.0.0 // indirect
 )

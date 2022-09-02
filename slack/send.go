@@ -9,4 +9,3 @@ func (s *Endpoint) Send(finding intigriti.Submission) []error {
 	message := buildMessage(finding)
 	return slack.Send(s.webHook.String(), "", message)
 }
-

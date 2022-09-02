@@ -9,14 +9,15 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 const (
-	defaultConfName = "isa.yaml"
-	defaultLogLevel = logrus.InfoLevel
+	defaultConfName      = "isa.yaml"
+	defaultLogLevel      = logrus.InfoLevel
 	defaultCheckInterval = 15
 
-	ClientVersion = "intigriti-slack-announce/1.0"
+	ClientVersion = "intigriti-slack-announce/finn-fork"
 )
 
 func main() {
@@ -38,11 +39,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	config.FindingIDs = make(map[string]string)
 	config.ConfigPath = *confPath
 
 	if config.CheckInterval == 0 {
 		config.CheckInterval = defaultCheckInterval
 	}
+	config.AppStartTime = time.Now().Unix()
 
 	if err := findingchecker.RunChecker(config, ClientVersion); err != nil {
 		log.Fatalf("could not run checker: %v", err)
