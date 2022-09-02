@@ -1,6 +1,14 @@
-intigriti-slack-announce
+intigriti-slack-announce-fork'd
 ========================
 Go bot that publishes any new intigriti submission titles to Slack.
+
+This is a fork of https://github.com/hazcod/intigriti-slack-announce
+
+Changes:
+1. Publishes reports as soon as they hit the triage queue 
+2. State is removed from the config file `findings` list, no way to persist the file in k8s pods between deployments.
+3. Will only publish reports with `CreatedDate` after application start up, all posted reports kept in-memory. 
+
 
 ## Setup
 1. Download [the latest isa release](https://github.com/hazcod/intigriti-slack-announce/releases).
@@ -8,8 +16,6 @@ Go bot that publishes any new intigriti submission titles to Slack.
 3. Retrieve your [intigriti API token](https://intigriti.com/) and pass your (external) IP address for whitelisting.
 4. Create your configuration file:
 ```yaml
-# skip findings in audit, archived and closed
-include_non_ready: false
 
 # how often to check in minutes
 check_interval_minutes: 15
