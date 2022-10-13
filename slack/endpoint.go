@@ -7,15 +7,17 @@ import (
 type Endpoint struct {
 	webHook   url.URL
 	clientTag string
+	Channel   string
 }
 
 type Message struct {
 	Text string `json:"text"`
 }
 
-func NewEndpoint(webHook url.URL, clientTag string) Endpoint {
+func NewEndpoint(webHook url.URL, channelName string, clientTag string) Endpoint {
 	return Endpoint{
 		webHook:   webHook,
 		clientTag: clientTag,
+		Channel:   channelName,
 	}
 }

@@ -32,8 +32,9 @@ func findingExists(config config.Config, finding intigriti.Submission) bool {
 	return found
 }
 
-func checkForNew(config config.Config, slckEndpoint slack.Endpoint, intiEndpoint intigriti.Endpoint) (func(), error) {
+func checkForNew(config config.Config, slckEndpoint map[string]slack.Endpoint, intiEndpoint intigriti.Endpoint) (func(), error) {
 	return func() {
+
 		logrus.Debug("checking for new findings")
 		findings, err := intiEndpoint.GetSubmissions()
 		if err != nil {
@@ -48,13 +49,11 @@ func checkForNew(config config.Config, slckEndpoint slack.Endpoint, intiEndpoint
 
 		for _, finding := range findings {
 			fLogger := logrus.WithField("finding_id", finding.ID).WithField("finding_state", finding.State)
-
 			if finding.State != "Triage" {
 				logrus.WithField("msg", "Finding is not in Triage state, skipping")
 				config.FindingIDs[finding.ID] = finding.ID
 				continue
 			}
-
 			fLogger.Debug("looking if finding exists")
 			if findingExists(config, finding) {
 				fLogger.Debugf("finding %s already sent to slack, skipping", finding.ID)
@@ -65,27 +64,43 @@ func checkForNew(config config.Config, slckEndpoint slack.Endpoint, intiEndpoint
 				config.FindingIDs[finding.ID] = finding.ID
 				continue
 			}
-			fLogger.Debug("new finding, sending off to slack")
-			if errs := slckEndpoint.Send(finding); len(errs) > 0 {
-				logrus.WithField("errors", fmt.Sprintf("%+v", errs)).
-					Error("could not send to slack")
+
+			routes := []slack.Endpoint{slckEndpoint["sch-bug-bounty-testing"]}
+			if channel, ok := config.ProgramChannelMap[finding.Program.Handle]; ok {
+				fmt.Printf("%s should be routed to #%s\n", finding.Program.Handle, channel)
+				routes = append(routes, slckEndpoint[channel])
 			} else {
-				config.FindingIDs[finding.ID] = finding.ID
+				fmt.Printf("%s not found in program-channel-map, only routing to default\n", channel)
+			}
+			for _, route := range routes {
+				fmt.Printf("sending to %s \n", route.Channel)
+				errs := route.Send(finding)
+				if len(errs) > 0 {
+					logrus.WithField("errors", fmt.Sprintf("%+v", errs)).Error("could not send to slack")
+				} else {
+					config.FindingIDs[finding.ID] = finding.ID
+				}
 			}
 		}
 	}, nil
 }
 
 func RunChecker(config config.Config, clientVersion string) error {
-	slackUrl, err := url.Parse(config.SlackWebhookURL)
-	if err != nil {
-		return errors.Wrap(err, "invalid slack url")
+
+	slackEndpoints := make(map[string]slack.Endpoint)
+
+	for channelName, webhookurl := range config.SlackWebhookURL {
+		slackUrl, err := url.Parse(webhookurl)
+		if err != nil {
+			return errors.Wrap(err, "invalid slack url")
+		}
+		slackEndpoint := slack.NewEndpoint(*slackUrl, channelName, clientVersion)
+		slackEndpoints[channelName] = slackEndpoint
 	}
 
-	slackEndpoint := slack.NewEndpoint(*slackUrl, clientVersion)
 	intigritiEndpoint := intigriti.New(config.IntigritiClientID, config.IntigritiClientSecret)
 
-	checkFunc, err := checkForNew(config, slackEndpoint, intigritiEndpoint)
+	checkFunc, err := checkForNew(config, slackEndpoints, intigritiEndpoint)
 	if err != nil {
 		return errors.Wrap(err, "could not initialize checker")
 	}

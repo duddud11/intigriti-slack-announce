@@ -11,7 +11,8 @@ type Config struct {
 	FindingIDs            map[string]string `yaml:"findings_festival"`
 	IncludeNonReady       bool              `yaml:"include_non_ready"`
 	CheckInterval         uint              `yaml:"check_interval_minutes"`
-	SlackWebhookURL       string            `yaml:"slack_url"`
+	SlackWebhookURL       map[string]string `yaml:"slack_url"`
+	ProgramChannelMap     map[string]string `yaml:"program_channel_map"`
 	IntigritiClientID     string            `yaml:"intigriti_client_id"`
 	IntigritiClientSecret string            `yaml:"intigriti_client_secret"`
 	AppStartTime          int64
