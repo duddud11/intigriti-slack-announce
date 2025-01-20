@@ -2,7 +2,7 @@ intigriti-slack-announce-fork'd
 ========================
 go bot that publishes any new intigriti submission titles to Slack.
 
-This is a fork of https://github.com/hazcod/intigriti-slack-announce
+this is a fork of https://github.com/hazcod/intigriti-slack-announce
 
 Changes:
 1. Publishes reports as soon as they hit the triage queue 
