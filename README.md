@@ -1,6 +1,6 @@
 intigriti-slack-announce-fork'd
 ========================
-Go bot that publishes any new intigriti submission titles to Slack.
+go bot that publishes any new intigriti submission titles to Slack.
 
 This is a fork of https://github.com/hazcod/intigriti-slack-announce
 
